@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  # webserver:
+  #   build:
+  #     context: .
+  #   image:
+  #   container_name:
+  #   ports:
+  #   volumes:
+  #   networks:
+  #     - nw-pz-infra
+
+  test-server:
+    build:
+      context:
+    image:
+    container_name:
+    volumes:
+      - ./vol-pz-infra:/vol-pz-infra
+    networks:
+      - nw-pz-infra
+
+
+networks:
+  nw-pz-infra
+    driver: bridge
