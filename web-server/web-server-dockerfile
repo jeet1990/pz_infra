@@ -1,0 +1,4 @@
+FROM httpd
+MAINTAINER sg
+COPY index.html /var/www/html
+EXPOSE 80

@@ -1,27 +1,30 @@
 version: '3.7'
 
 services:
-  # webserver:
-  #   build:
-  #     context: .
-  #   image:
-  #   container_name:
-  #   ports:
-  #   volumes:
-  #   networks:
-  #     - nw-pz-infra
-
-  test-server:
+  webserver:
     build:
-      context:
-    image:
-    container_name:
+      context: ./web-server
+      dockerfile: web-server-dockerfile
+    container_name: c-web-server
+    ports: 
+      - 47000:80
     volumes:
       - ./vol-pz-infra:/vol-pz-infra
     networks:
       - nw-pz-infra
 
+  test-server:
+    build:
+      context: ./test-server
+      dockerfile: test-server-dockerfile
+    # image: 
+    container_name: c-test-server
+    volumes:
+      - ./vol-pz-infra:/vol-pz-infra
+#     networks:
+#       - nw-pz-infra
+
 
 networks:
-  nw-pz-infra
+  nw-pz-infra:
     driver: bridge
