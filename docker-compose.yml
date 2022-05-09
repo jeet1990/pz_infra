@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  webserver:
+  web-server:
     build:
       context: ./web-server
       dockerfile: web-server-dockerfile
@@ -10,6 +10,7 @@ services:
       - 47000:80
     volumes:
       - ./vol-pz-infra:/vol-pz-infra
+      - ./vol-tarball-package:/usr/local/apache2/htdocs/tarballs
     networks:
       - nw-pz-infra
 
