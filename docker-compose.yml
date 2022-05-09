@@ -1,31 +1,95 @@
 version: '3.7'
 
 services:
-  web-server:
+  s-web-server:
     build:
-      context: ./web-server
-      dockerfile: web-server-dockerfile
+      context: ./s-web-server
+      dockerfile: dockerfile-web-server
     container_name: c-web-server
     ports: 
       - 47000:80
+    networks:
+      - nw-pz-infra
     volumes:
       - ./vol-pz-infra:/vol-pz-infra
       - ./vol-tarball-package:/usr/local/apache2/htdocs/tarballs
+  
+  s-jenkin-server:
+    build:
+      context: ./s-jenkin-server
+      dockerfile: dockerfile-jenkin-server
+    container_name: c-jenkin-server
+    # privileged: true
+    # user: root
+    environment:
+      - DOCKER_HOST=tcp://c-jenkins-docker:2376
+      - DOCKER_CERT_PATH=/certs/client 
+      - DOCKER_TLS_VERIFY=1
+    ports: 
+      - 50003:50000
+      - 8083:8080
     networks:
       - nw-pz-infra
-
-  test-server:
-    build:
-      context: ./test-server
-      dockerfile: test-server-dockerfile
-    # image: 
-    container_name: c-test-server
+      - nw-jenkins
     volumes:
       - ./vol-pz-infra:/vol-pz-infra
-#     networks:
-#       - nw-pz-infra
+      - ./s-jenkin-server/vol/jenkins-data:/var/jenkins_home
+      - ./s-jenkin-server/vol/jenkins-docker-certs:/certs/client:ro
+
+  s-jenkins-docker-server:
+    build:
+      context: ./s-jenkin-server
+      dockerfile: dockerfile-jenkin-docker
+    container_name: c-jenkin-docker
+    privileged: true
+    user: root
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    ports:
+      - 2376:2376
+    networks:
+      - nw-pz-infra
+      - nw-jenkins
+    volumes:
+      - ./vol-pz-infra:/vol-pz-infra
+      - ./s-jenkin-server/jenkins-data:/var/jenkins_home
+      - ./s-jenkin-server/jenkins-docker-certs:/certs/client 
+
+
+
+
+  # template-server:
+  #   build:
+  #   container_name:
+  #   ports:
+  #     - 
+  #   volumes:
+  #     - 
+  #   networks:
+  #     - nw-pz-infr
+
+
+  # test-server:
+  #   build:
+  #     context: ./test-server
+  #     dockerfile: test-server-dockerfile
+  #   image: 
+  #   container_name: c-test-server
+  #   volumes:
+  #     - ./vol-pz-infra:/vol-pz-infra
+  #   networks:
+  #     - nw-pz-infra
 
 
 networks:
   nw-pz-infra:
     driver: bridge
+  nw-jenkins:
+    driver: bridge
+
+# volumes:
+#   jenkins-data: 
+#   jenkins-docker:
+#   jenkins-docker-certs:
+
+
