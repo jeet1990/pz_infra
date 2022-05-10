@@ -21,6 +21,7 @@ services:
     container_name: c-jenkin-server
     privileged: true
     user: root
+    # priv and user field is required, otherwise throws an error while bringing up container. err: perm denied inside container files.
     environment:
       - DOCKER_HOST=tcp://c-jenkins-docker:2376
       - DOCKER_CERT_PATH=/certs/client 
